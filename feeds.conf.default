@@ -1,0 +1,7 @@
+src-git packages https://v6.gh-proxy.org/https://github.com/openwrt/packages.git
+src-git luci https://v6.gh-proxy.org/https://github.com/openwrt/luci.git
+src-git routing https://v6.gh-proxy.org/https://github.com/openwrt/routing.git
+src-git telephony https://v6.gh-proxy.org/https://github.com/openwrt/telephony.git
+src-git video https://v6.gh-proxy.org/https://github.com/openwrt/video.git
+
+
