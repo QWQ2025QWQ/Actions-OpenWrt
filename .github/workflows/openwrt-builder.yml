@@ -46,7 +46,7 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+        sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost /usr/share/swift /usr/local/.ghcup /opt/hostedtoolcache/go /usr/local/lib/node_modules /usr/local/share/powershell
         sudo -E apt-get -qq update
         sudo -E apt-get -qq install ack-grep antlr3 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler flex gawk gcc-multilib g++-multilib gettext git gperf haveged help2man libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev libgmp-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool lrzsz mkisofs msmtp ninja-build p7zip p7zip-full patch pkgconf python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
         sudo -E apt-get -qq autoremove --purge
@@ -73,6 +73,7 @@ jobs:
       with:
         path: /tmp/.upstream_sha
         key: upstream-sha-${{ steps.upstream.outputs.sha }}
+        save-always: true
 
     - name: Create cache marker
       if: steps.sha-cache.outputs.cache-hit != 'true'
@@ -112,19 +113,26 @@ jobs:
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
 
+    - name: Compute config hash
+      id: config_hash
+      run: |
+        echo "hash=$(sha256sum openwrt/.config | awk '{print $1}')" >> $GITHUB_OUTPUT
+
     - name: Cache ccache
       uses: actions/cache@v6
       with:
         path: ~/.ccache
-        key: ccache-${{ runner.arch }}-${{ hashFiles('openwrt/.config') }}
+        key: ccache-${{ runner.arch }}-${{ steps.config_hash.outputs.hash }}
         restore-keys: |
           ccache-${{ runner.arch }}-
+        save-always: true
 
     - name: Cache downloads
       uses: actions/cache@v6
       with:
         path: /workdir/openwrt/dl
-        key: dl-${{ hashFiles('openwrt/.config') }}
+        key: dl-${{ steps.config_hash.outputs.hash }}
+        save-always: true
 
     - name: Download package
       id: package
@@ -152,7 +160,7 @@ jobs:
 
     - name: Upload bin directory
       uses: actions/upload-artifact@v7
-      if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
+      if: env.UPLOAD_BIN_DIR == 'true' && !cancelled()
       with:
         name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
@@ -172,6 +180,7 @@ jobs:
       with:
         name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
+        overwrite: true
 
     - name: Generate release tag
       id: tag
