@@ -17,5 +17,4 @@ set -euo pipefail
 
 # Add custom packages
 git clone https://v6.gh-proxy.org/https://github.com/jerrykuku/luci-theme-argon package/luci-theme-argon
-git clone https://v6.gh-proxy.org/https://github.com/qwq2025qwq/openwrt-r8125 package/openwrt-r8125
 #echo 'src-git passwall https://github.com/xiaorouji/openwrt-passwall' >>feeds.conf.default
