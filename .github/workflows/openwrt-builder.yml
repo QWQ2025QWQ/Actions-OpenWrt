@@ -48,7 +48,7 @@ jobs:
       run: |
         sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost /usr/share/swift /usr/local/.ghcup /opt/hostedtoolcache/go /usr/local/lib/node_modules /usr/local/share/powershell
         sudo -E apt-get -qq update
-        sudo -E apt-get -qq install ack-grep antlr3 asciidoc autoconf automake autopoint binutils bison build-essential bzip2 ccache cmake cpio curl device-tree-compiler flex gawk gcc-multilib g++-multilib gettext git gperf haveged help2man libc6-dev-i386 libelf-dev libfuse-dev libglib2.0-dev libgmp-dev libltdl-dev libmpc-dev libmpfr-dev libncurses5-dev libncursesw5-dev libpython3-dev libreadline-dev libssl-dev libtool lrzsz mkisofs msmtp ninja-build p7zip p7zip-full patch pkgconf python3 python3-pyelftools python3-setuptools qemu-utils rsync scons squashfs-tools subversion swig texinfo uglifyjs upx-ucl unzip vim wget xmlto xxd zlib1g-dev
+        sudo -E apt-get -qq install --no-install-recommends autoconf automake binutils bison build-essential ccache cmake cpio curl flex gawk gcc-multilib g++-multilib gettext git libc6-dev-i386 libelf-dev libncurses5-dev libncursesw5-dev libpython3-dev libssl-dev libtool patch p7zip-full python3 python3-setuptools qemu-utils rsync unzip upx-ucl wget xxd zlib1g-dev
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
@@ -67,17 +67,23 @@ jobs:
           echo "Upstream SHA: $SHA"
         fi
 
-    - name: Cache upstream SHA
+    - name: Restore upstream SHA cache
       id: sha-cache
-      uses: actions/cache@v6
+      uses: actions/cache/restore@v6
       with:
         path: /tmp/.upstream_sha
         key: upstream-sha-${{ steps.upstream.outputs.sha }}
-        save-always: true
 
     - name: Create cache marker
       if: steps.sha-cache.outputs.cache-hit != 'true'
       run: mkdir -p /tmp/.upstream_sha
+
+    - name: Save upstream SHA cache
+      if: steps.sha-cache.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v6
+      with:
+        path: /tmp/.upstream_sha
+        key: upstream-sha-${{ steps.upstream.outputs.sha }}
 
     - name: Skip build if no upstream changes
       if: steps.sha-cache.outputs.cache-hit == 'true' && github.event_name == 'schedule'
@@ -118,21 +124,21 @@ jobs:
       run: |
         echo "hash=$(sha256sum openwrt/.config | awk '{print $1}')" >> $GITHUB_OUTPUT
 
-    - name: Cache ccache
-      uses: actions/cache@v6
+    - name: Restore ccache
+      id: cache-ccache
+      uses: actions/cache/restore@v6
       with:
         path: ~/.ccache
         key: ccache-${{ runner.arch }}-${{ steps.config_hash.outputs.hash }}
         restore-keys: |
           ccache-${{ runner.arch }}-
-        save-always: true
 
-    - name: Cache downloads
-      uses: actions/cache@v6
+    - name: Restore downloads
+      id: cache-dl
+      uses: actions/cache/restore@v6
       with:
         path: /workdir/openwrt/dl
         key: dl-${{ steps.config_hash.outputs.hash }}
-        save-always: true
 
     - name: Download package
       id: package
@@ -142,6 +148,13 @@ jobs:
         make download -j8
         find dl -size -1024c -exec ls -l {} \;
         find dl -size -1024c -exec rm -f {} \;
+
+    - name: Save downloads cache
+      if: success() || failure()
+      uses: actions/cache/save@v6
+      with:
+        path: /workdir/openwrt/dl
+        key: dl-${{ steps.config_hash.outputs.hash }}
 
     - name: Compile the firmware
       id: compile
@@ -153,6 +166,13 @@ jobs:
         grep '^CONFIG_TARGET.*DEVICE.*=y' .config | sed -r 's/.*DEVICE_(.*)=y/\1/' > DEVICE_NAME
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
+
+    - name: Save ccache
+      if: success() || failure()
+      uses: actions/cache/save@v6
+      with:
+        path: ~/.ccache
+        key: ccache-${{ runner.arch }}-${{ steps.config_hash.outputs.hash }}
 
     - name: Check space usage
       if: (!cancelled())
@@ -191,7 +211,7 @@ jobs:
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: Upload firmware to release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       if: steps.tag.outputs.status == 'success' && !cancelled()
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
