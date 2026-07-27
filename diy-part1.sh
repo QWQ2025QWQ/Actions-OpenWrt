@@ -16,5 +16,4 @@ set -euo pipefail
 #sed -i 's/^#\(.*helloworld\)/\1/' feeds.conf.default
 
 # Add custom packages
-git clone https://v6.gh-proxy.org/https://github.com/jerrykuku/luci-theme-argon package/luci-theme-argon
 #echo 'src-git passwall https://github.com/xiaorouji/openwrt-passwall' >>feeds.conf.default
