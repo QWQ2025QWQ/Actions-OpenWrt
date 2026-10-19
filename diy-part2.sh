@@ -12,6 +12,10 @@
 
 set -euo pipefail
 
+# 拉取 Argon 主题及配置插件
+git clone https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
+git clone https://github.com/jerrykuku/luci-app-argon-config.git package/luci-app-argon-config
+
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.23.1/g' package/base-files/files/bin/config_generate
 
