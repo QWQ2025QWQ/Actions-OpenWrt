@@ -16,6 +16,17 @@ set -euo pipefail
 git clone https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
 git clone https://github.com/jerrykuku/luci-app-argon-config.git package/luci-app-argon-config
 
+# ---------- Argon 主题：自定义 favicon / 背景图 ----------
+ARGON_ICON="package/luci-theme-argon/htdocs/luci-static/argon/icon"
+ARGON_BG="package/luci-theme-argon/htdocs/luci-static/argon/background"
+
+cp "$GITHUB_WORKSPACE/custom/icon16.png"         "$ARGON_ICON/favicon-16x16.png"
+cp "$GITHUB_WORKSPACE/custom/icon32.png"         "$ARGON_ICON/favicon-32x32.png"
+cp "$GITHUB_WORKSPACE/custom/icon144.png"        "$ARGON_ICON/apple-icon-144x144.png"
+cp "$GITHUB_WORKSPACE/custom/icon192.png"        "$ARGON_ICON/android-icon-192x192.png"
+cp "$GITHUB_WORKSPACE/custom/icon48_48x48.ico"   "$ARGON_ICON/favicon.ico"
+cp "$GITHUB_WORKSPACE/custom/bg.jpg"             "$ARGON_BG/background.jpg"
+
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.23.1/g' package/base-files/files/bin/config_generate
 
