@@ -15,6 +15,9 @@ set -euo pipefail
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.1.3/g' package/base-files/files/bin/config_generate
 
+cp "$GITHUB_WORKSPACE/robin.png" package/luci-theme-alpha/luasrc/background/background.png
+cp "$GITHUB_WORKSPACE/robin.png" package/luci-theme-alpha/luasrc/background/login.png
+
 # Modify default timezone
 sed -i "s/set system.@system\[-1\].timezone='GMT0'/set system.@system[-1].timezone='CST-8'/" \
 	package/base-files/files/bin/config_generate
