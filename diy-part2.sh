@@ -25,6 +25,11 @@ sed -i "s/set system.@system\[-1\].zonename='UTC'/set system.@system[-1].zonenam
 sed -i "s/option lang 'auto'/option lang 'zh_cn'/" \
 	feeds/luci/modules/luci-base/root/etc/config/luci
 
+# Modify default theme to alpha
+sed -i 's/luci-theme-bootstrap/luci-theme-alpha/g' feeds/luci/collections/luci/Makefile
+sed -i 's/luci-theme-bootstrap/luci-theme-alpha/g' feeds/luci/collections/luci-light/Makefile
+sed -i 's/luci-theme-bootstrap/luci-theme-alpha/g' feeds/luci/collections/luci-nginx/Makefile
+
 # Enable ccache to speed up subsequent builds
 echo 'CONFIG_CCACHE=y' >> .config
 
