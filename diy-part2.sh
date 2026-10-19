@@ -18,16 +18,6 @@ sed -i 's/192.168.1.1/192.168.1.3/g' package/base-files/files/bin/config_generat
 cp "$GITHUB_WORKSPACE/robin.png" package/luci-theme-alpha/luasrc/background/background.png
 cp "$GITHUB_WORKSPACE/robin.png" package/luci-theme-alpha/luasrc/background/login.png
 
-# Modify default timezone
-sed -i "s/set system.@system\[-1\].timezone='GMT0'/set system.@system[-1].timezone='CST-8'/" \
-	package/base-files/files/bin/config_generate
-sed -i "s/set system.@system\[-1\].zonename='UTC'/set system.@system[-1].zonename='Asia\/Shanghai'/" \
-	package/base-files/files/bin/config_generate
-
-# Modify default LuCI language
-sed -i "s/option lang 'auto'/option lang 'zh_cn'/" \
-	feeds/luci/modules/luci-base/root/etc/config/luci
-
 # Modify default theme to alpha
 sed -i 's/luci-theme-bootstrap/luci-theme-alpha/g' feeds/luci/collections/luci/Makefile
 sed -i 's/luci-theme-bootstrap/luci-theme-alpha/g' feeds/luci/collections/luci-light/Makefile
