@@ -15,6 +15,16 @@ set -euo pipefail
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.1.3/g' package/base-files/files/bin/config_generate
 
+# Modify default timezone
+sed -i "s/set system.@system\[-1\].timezone='GMT0'/set system.@system[-1].timezone='CST-8'/" \
+	package/base-files/files/bin/config_generate
+sed -i "s/set system.@system\[-1\].zonename='UTC'/set system.@system[-1].zonename='Asia\/Shanghai'/" \
+	package/base-files/files/bin/config_generate
+
+# Modify default LuCI language
+sed -i "s/option lang 'auto'/option lang 'zh_cn'/" \
+	feeds/luci/modules/luci-base/root/etc/config/luci
+
 # Enable ccache to speed up subsequent builds
 echo 'CONFIG_CCACHE=y' >> .config
 
