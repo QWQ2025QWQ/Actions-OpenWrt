@@ -40,3 +40,12 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-n
 
 # Modify hostname
 #sed -i 's/OpenWrt/P3TERX-Router/g' package/base-files/files/bin/config_generate
+
+# 修复 uhttpd 因 ucode STATUS_BREAK 导致的编译错误
+UCODE_MAKEFILE=$(find . -path "*/ucode/Makefile" -not -path "./build_dir/*" | head -n 1)
+if [ -n "$UCODE_MAKEFILE" ]; then
+    sed -i 's/PKG_SOURCE_VERSION:=.*/PKG_SOURCE_VERSION:=ca796d7/' "$UCODE_MAKEFILE"
+    # 同时更新源码日期，确保构建系统能识别到版本变化
+    sed -i "s/PKG_SOURCE_DATE:=.*/PKG_SOURCE_DATE:=$(date +%Y-%m-%d)/" "$UCODE_MAKEFILE"
+    echo "ucode PKG_SOURCE_VERSION 已更新至 ca796d7"
+fi
