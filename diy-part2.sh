@@ -41,14 +41,6 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-n
 # Modify hostname
 #sed -i 's/OpenWrt/P3TERX-Router/g' package/base-files/files/bin/config_generate
 
-# 修复 uhttpd 因 ucode STATUS_BREAK 导致的编译错误
-UHTTPD_MAKEFILE="package/network/services/uhttpd/Makefile"
-if [ -f "$UHTTPD_MAKEFILE" ]; then
-    sed -i 's/PKG_SOURCE_VERSION:=.*/PKG_SOURCE_VERSION:=ca796d7dec5697a2d1a7a42be79677f239b64282/' "$UHTTPD_MAKEFILE"
-    echo "=== 验证 uhttpd Makefile ==="
-    grep "PKG_SOURCE_VERSION" "$UHTTPD_MAKEFILE"
-fi
-
 # 仅关闭：容器支持、命名空间隔离、安全计算模式
 perl -i -pe '
   s/^CONFIG_KERNEL_(CGROUPS|CGROUP_[A-Z0-9_]+|CPUSETS|CPUSETS_V1|PROC_PID_CPUSET|MEMCG|MEMCG_KMEM|MEMCG_V1|FAIR_GROUP_SCHED|CFS_BANDWIDTH|RT_GROUP_SCHED|BLK_CGROUP|CFQ_GROUP_IOSCHED|BLK_DEV_THROTTLING|BLK_DEV_THROTTLING_LOW|DEBUG_BLK_CGROUP|NET_CLS_CGROUP|CGROUP_NET_CLASSID|CGROUP_NET_PRIO|NAMESPACES|UTS_NS|IPC_NS|USER_NS|PID_NS|NET_NS|TIME_NS|SECCOMP_FILTER|SECCOMP)=y$/# CONFIG_KERNEL_$1 is not set/;
