@@ -14,7 +14,6 @@ set -euo pipefail
 
 # 拉取 Argon 主题及配置插件
 git clone https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
-git clone https://github.com/jerrykuku/luci-app-argon-config.git package/luci-app-argon-config
 
 # ---------- Argon 主题：自定义 favicon / 背景图 ----------
 ARGON_ICON="package/luci-theme-argon/htdocs/luci-static/argon/icon"
