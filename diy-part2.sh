@@ -18,26 +18,16 @@ git clone https://github.com/derisamedia/luci-theme-alpha.git package/luci-theme
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.1.3/g' package/base-files/files/bin/config_generate
 
-cp "$GITHUB_WORKSPACE/robin.png" package/luci-theme-alpha/luasrc/background/background.png
+cp "$GITHUB_WORKSPACE/robin.png" package/luci-theme-alpha/luasrc/background/dashboard.png
 cp "$GITHUB_WORKSPACE/robin.png" package/luci-theme-alpha/luasrc/background/login.png
-
-# Modify default theme to alpha
-sed -i 's/luci-theme-bootstrap/luci-theme-alpha/g' feeds/luci/collections/luci/Makefile
-sed -i 's/luci-theme-bootstrap/luci-theme-alpha/g' feeds/luci/collections/luci-light/Makefile
-sed -i 's/luci-theme-bootstrap/luci-theme-alpha/g' feeds/luci/collections/luci-nginx/Makefile
 
 # Enable ccache to speed up subsequent builds
 echo 'CONFIG_CCACHE=y' >> .config
 
 # Modify default theme
+sed -i 's/luci-theme-bootstrap/luci-theme-alpha/g' feeds/luci/collections/luci/Makefile
+sed -i 's/luci-theme-bootstrap/luci-theme-alpha/g' feeds/luci/collections/luci-light/Makefile
+sed -i 's/luci-theme-bootstrap/luci-theme-alpha/g' feeds/luci/collections/luci-nginx/Makefile
 
 # Modify hostname
-#sed -i 's/OpenWrt/P3TERX-Router/g' package/base-files/files/bin/config_generate
-
-# 修复 uhttpd 因 ucode STATUS_BREAK 导致的编译错误
-UHTTPD_MAKEFILE="package/network/services/uhttpd/Makefile"
-if [ -f "$UHTTPD_MAKEFILE" ]; then
-    sed -i 's/PKG_SOURCE_VERSION:=.*/PKG_SOURCE_VERSION:=ca796d7dec5697a2d1a7a42be79677f239b64282/' "$UHTTPD_MAKEFILE"
-    echo "=== 验证 uhttpd Makefile ==="
-    grep "PKG_SOURCE_VERSION" "$UHTTPD_MAKEFILE"
-fi
+sed -i 's/OpenWrt/QWQ2025-Router/g' package/base-files/files/bin/config_generate
