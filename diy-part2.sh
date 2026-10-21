@@ -22,7 +22,7 @@ cat > files/etc/uci-defaults/99-change-mirror << 'EOF'
 # 等待网络就绪
 sleep 5
 # 替换为教育网联合镜像站
-sed -i 's#downloads.openwrt.org#mirrors.cernet.edu.cn/openwrt#g' /etc/apk/repositories.d/distfeeds.list
+sed -i 's#downloads.openwrt.org#mirrors.ustc.edu.cn/openwrt#g' /etc/apk/repositories.d/distfeeds.list
 exit 0
 EOF
 chmod +x files/etc/uci-defaults/99-change-mirror
