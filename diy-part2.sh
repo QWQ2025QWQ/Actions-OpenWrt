@@ -15,24 +15,17 @@ set -euo pipefail
 git clone https://github.com/animegasan/luci-app-alpha-config.git package/luci-app-alpha-config
 git clone https://github.com/derisamedia/luci-theme-alpha.git package/luci-theme-alpha
 
-# 人工创建 distfeeds.list 并指向教育网镜像
-mkdir -p package/base-files/files/etc/apk/repositories.d
-A=$(grep '^CONFIG_TARGET_ARCH_PACKAGES=' .config | cut -d'"' -f2)
-B=$(grep '^CONFIG_TARGET_BOARD=' .config | cut -d'"' -f2)
-S=$(grep '^CONFIG_TARGET_SUBTARGET=' .config | cut -d'"' -f2)
-V=$(grep '^CONFIG_VERSION_NUMBER=' .config | cut -d'"' -f2)
-[ -z "$V" ] && V="snapshots" || V="releases/$V"
-M="https://mirrors.cernet.edu.cn/openwrt/$V"
-
-cat <<EOF > package/base-files/files/etc/apk/repositories.d/distfeeds.list
-$M/targets/$B/$S/packages/packages.adb
-$M/packages/$A/base/packages.adb
-$M/packages/$A/luci/packages.adb
-$M/packages/$A/packages/packages.adb
-$M/packages/$A/routing/packages.adb
-$M/packages/$A/telephony/packages.adb
-$M/packages/$A/video/packages.adb
+# 开机自动修改镜像源 (放在源码根目录的 files 中)
+mkdir -p files/etc/uci-defaults
+cat > files/etc/uci-defaults/99-change-mirror << 'EOF'
+#!/bin/sh
+# 等待网络就绪
+sleep 5
+# 替换为教育网联合镜像站
+sed -i 's#downloads.openwrt.org#mirrors.cernet.edu.cn/openwrt#g' /etc/apk/repositories.d/distfeeds.list
+exit 0
 EOF
+chmod +x files/etc/uci-defaults/99-change-mirror
 
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.1.3/g' package/base-files/files/bin/config_generate
