@@ -15,6 +15,8 @@ set -euo pipefail
 git clone https://github.com/animegasan/luci-app-alpha-config.git package/luci-app-alpha-config
 git clone https://github.com/derisamedia/luci-theme-alpha.git package/luci-theme-alpha
 
+sed -i 's#http[s]*://downloads.openwrt.org#https://mirrors.cernet.edu.cn/openwrt#g' package/base-files/files/etc/apk/repositories.d/distfeeds.list || true
+
 # Modify default IP
 sed -i 's/192.168.1.1/192.168.1.3/g' package/base-files/files/bin/config_generate
 
