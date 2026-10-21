@@ -56,3 +56,7 @@ cp /tmp/r/$A/hbbs /tmp/r/$A/hbbr package/base-files/files/usr/bin/ && chmod +x p
 
 # 将 apk 源配置文件加入升级保留名单
 echo '/etc/apk/repositories.d/distfeeds.list' >> package/base-files/files/etc/sysupgrade.conf
+
+echo 'CONFIG_PACKAGE_ddns-go=y' >> .config
+echo 'CONFIG_PACKAGE_luci-i18n-ddns-go-zh-cn=y' >> .config
+echo 'CONFIG_PACKAGE_luci-app-ddns-go=y' >> .config
