@@ -58,4 +58,3 @@ cp /tmp/r/$A/hbbs /tmp/r/$A/hbbr package/base-files/files/usr/bin/ && chmod +x p
 echo '/etc/apk/repositories.d/distfeeds.list' >> package/base-files/files/etc/sysupgrade.conf
 echo '/etc/rustdesk' >> package/base-files/files/etc/sysupgrade.conf
 echo '/etc/ddns-go' >> package/base-files/files/etc/sysupgrade.conf
-echo '/root/.config/rustdesk/' >> package/base-files/files/etc/sysupgrade.conf
