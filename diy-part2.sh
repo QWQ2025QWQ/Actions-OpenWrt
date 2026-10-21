@@ -33,3 +33,10 @@ sed -i 's/luci-theme-bootstrap/luci-theme-alpha/g' feeds/luci/collections/luci-n
 
 # Modify hostname
 sed -i 's/OpenWrt/QWQ2025-Router/g' package/base-files/files/bin/config_generate
+
+# 预装 RustDesk Server (自动下载最新版并放入 /usr/bin)
+V=$(curl -sL https://api.github.com/repos/rustdesk/rustdesk-server/releases/latest | grep -oP '(?<="tag_name": ")[^"]+')
+A="amd64"; [[ "$ARCH" == aarch64* ]] && A="arm64v8"; [[ "$ARCH" == arm* ]] && A="armv7"
+curl -sL https://github.com/rustdesk/rustdesk-server/releases/download/$V/rustdesk-server-linux-$A.zip -o /tmp/r.zip
+unzip -qo /tmp/r.zip -d /tmp/r && mkdir -p package/base-files/files/usr/bin
+cp /tmp/r/$A/hbbs /tmp/r/$A/hbbr package/base-files/files/usr/bin/ && chmod +x package/base-files/files/usr/bin/hb*
