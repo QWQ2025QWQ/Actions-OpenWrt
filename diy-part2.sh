@@ -14,6 +14,7 @@ set -euo pipefail
 
 git clone https://github.com/animegasan/luci-app-alpha-config.git package/luci-app-alpha-config
 git clone https://github.com/derisamedia/luci-theme-alpha.git package/luci-theme-alpha
+git clone https://v6.gh-proxy.org/https://github.com/sirpdboy/luci-app-ddns-go.git package/luci-app-ddns-go
 
 # 开机自动修改镜像源 (放在源码根目录的 files 中)
 mkdir -p files/etc/uci-defaults
@@ -58,17 +59,3 @@ echo '/etc/apk/repositories.d/distfeeds.list' >> package/base-files/files/etc/sy
 echo '/etc/rustdesk' >> package/base-files/files/etc/sysupgrade.conf
 echo '/etc/ddns-go' >> package/base-files/files/etc/sysupgrade.conf
 echo '/root/.config/rustdesk/' >> package/base-files/files/etc/sysupgrade.conf
-
-# 克隆到指定的 package 目录（目录名建议直接用 ddns-go 更清晰）
-git clone --depth=1 https://v6.gh-proxy.org/https://github.com/sirpdboy/luci-app-ddns-go.git package/ddns-go
-
-# 写入配置，选中核心和界面（sirpdboy 仓库的核心包名为 ddns-go，界面包名为 luci-app-ddns-go）
-sed -i '/CONFIG_PACKAGE_ddns-go/d' .config 2>/dev/null || true
-sed -i '/CONFIG_PACKAGE_luci-app-ddns-go/d' .config 2>/dev/null || true
-sed -i '/CONFIG_PACKAGE_luci-i18n-ddns-go-zh-cn/d' .config 2>/dev/null || true
-
-cat >> .config << 'EOF'
-CONFIG_PACKAGE_ddns-go=y
-CONFIG_PACKAGE_luci-app-ddns-go=y
-CONFIG_PACKAGE_luci-i18n-ddns-go-zh-cn=y
-EOF
