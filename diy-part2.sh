@@ -14,6 +14,7 @@ set -euo pipefail
 
 git clone https://github.com/animegasan/luci-app-alpha-config.git package/luci-app-alpha-config
 git clone https://github.com/derisamedia/luci-theme-alpha.git package/luci-theme-alpha
+git clone https://v6.gh-proxy.org/https://github.com/sirpdboy/luci-app-ddns-go.git
 
 # 开机自动修改镜像源 (放在源码根目录的 files 中)
 mkdir -p files/etc/uci-defaults
