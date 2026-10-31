@@ -39,7 +39,7 @@ sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-l
 sed -i 's/luci-theme-bootstrap/luci-theme-argon/g' feeds/luci/collections/luci-nginx/Makefile 2>/dev/null || true
 
 # Modify hostname
-#sed -i 's/OpenWrt/P3TERX-Router/g' package/base-files/files/bin/config_generate
+sed -i 's/OpenWrt/Xtreme-Link/g' package/base-files/files/bin/config_generate
 
 # 仅关闭：容器支持、命名空间隔离、安全计算模式
 perl -i -pe '
