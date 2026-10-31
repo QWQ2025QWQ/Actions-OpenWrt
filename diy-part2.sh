@@ -14,17 +14,23 @@ set -euo pipefail
 
 # 拉取 Argon 主题及配置插件
 git clone https://github.com/jerrykuku/luci-theme-argon.git package/luci-theme-argon
-git clone https://github.com/jerrykuku/luci-app-argon-config.git package/luci-app-argon-config
 
-# ---------- Argon 主题：自定义 favicon / 背景图 ----------
-ARGON_ICON="package/luci-theme-argon/htdocs/luci-static/argon/icon"
-ARGON_BG="package/luci-theme-argon/htdocs/luci-static/argon/background"
+# ---------- Argon 3.0 主题：自定义品牌资源 ----------
+# 注意：Argon 3.0 将自定义图标放在 root 目录的 branding 下，而不是 htdocs 的 icon 下
+ARGON_BRANDING="package/luci-theme-argon/root/www/luci-static/argon/branding"
+ARGON_BG="package/luci-theme-argon/root/www/luci-static/argon/background"
 
-cp "$GITHUB_WORKSPACE/custom/icon16.png"         "$ARGON_ICON/favicon-16x16.png"
-cp "$GITHUB_WORKSPACE/custom/icon32.png"         "$ARGON_ICON/favicon-32x32.png"
-cp "$GITHUB_WORKSPACE/custom/icon144.png"        "$ARGON_ICON/apple-icon-144x144.png"
-cp "$GITHUB_WORKSPACE/custom/icon192.png"        "$ARGON_ICON/android-icon-192x192.png"
-cp "$GITHUB_WORKSPACE/custom/icon48_48x48.ico"   "$ARGON_ICON/favicon.ico"
+# 确保目标目录存在（CI 编译时防止 cp 失败）
+mkdir -p "$ARGON_BRANDING"
+mkdir -p "$ARGON_BG"
+
+# 复制图标
+cp "$GITHUB_WORKSPACE/custom/icon16.png"         "$ARGON_BRANDING/favicon-16x16.png"
+cp "$GITHUB_WORKSPACE/custom/icon32.png"         "$ARGON_BRANDING/favicon-32x32.png"
+cp "$GITHUB_WORKSPACE/custom/icon144.png"        "$ARGON_BRANDING/apple-icon-144x144.png"
+cp "$GITHUB_WORKSPACE/custom/icon192.png"        "$ARGON_BRANDING/android-icon-192x192.png"
+cp "$GITHUB_WORKSPACE/custom/icon48_48x48.ico"   "$ARGON_BRANDING/favicon.ico"
+cp "$GITHUB_WORKSPACE/custom/icon192.png"         "$ARGON_BRANDING/logo.png"
 cp "$GITHUB_WORKSPACE/custom/bg.jpg"             "$ARGON_BG/background.jpg"
 
 # Modify default IP
